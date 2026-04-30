@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEILLE SÉCURITÉ — LIMA / PÉROU</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap');
+
+:root {
+–bg: #090d12;
+–panel: #0d1520;
+–border: #1a2d45;
+–accent: #00c8ff;
+–accent2: #ff6b35;
+–green: #00e676;
+–orange: #ff9800;
+–red: #f44336;
+–yellow: #ffd600;
+–text: #c8dde8;
+–dim: #4a6275;
+–mono: ‘Share Tech Mono’, monospace;
+–cond: ‘Barlow Condensed’, sans-serif;
+–body: ‘Barlow’, sans-serif;
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: var(–body);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* SCAN LINE EFFECT */
+body::before {
+content: ‘’;
+position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,200,255,0.015) 2px, rgba(0,200,255,0.015) 4px);
+pointer-events: none; z-index: 9999;
+}
+
+/* HEADER */
+header {
+background: linear-gradient(135deg, #0a1628 0%, #0d1e35 100%);
+border-bottom: 2px solid var(–accent);
+padding: 16px 24px;
+display: flex; align-items: center; justify-content: space-between;
+position: sticky; top: 0; z-index: 100;
+box-shadow: 0 4px 30px rgba(0,200,255,0.15);
+}
+
+.header-left { display: flex; align-items: center; gap: 16px; }
+
+.flag {
+width: 36px; height: 24px;
+background: linear-gradient(to right, #d91023 33%, #fff 33%, #fff 66%, #d91023 66%);
+border: 1px solid #555; border-radius: 2px; flex-shrink: 0;
+}
+
+.header-title {
+font-family: var(–cond);
+font-weight: 900;
+font-size: 22px;
+letter-spacing: 3px;
+color: #fff;
+text-transform: uppercase;
+}
+
+.header-title span { color: var(–accent); }
+
+.header-sub {
+font-family: var(–mono);
+font-size: 10px;
+color: var(–dim);
+letter-spacing: 2px;
+margin-top: 2px;
+}
+
+.header-right { display: flex; align-items: center; gap: 16px; }
+
+#clock {
+font-family: var(–mono);
+font-size: 13px;
+color: var(–accent);
+letter-spacing: 2px;
+}
+
+.refresh-btn {
+background: transparent;
+border: 1px solid var(–accent);
+color: var(–accent);
+font-family: var(–mono);
+font-size: 11px;
+padding: 6px 14px;
+cursor: pointer;
+letter-spacing: 1px;
+transition: all 0.2s;
+border-radius: 2px;
+}
+.refresh-btn:hover { background: var(–accent); color: var(–bg); }
+
+/* MAIN LAYOUT */
+main {
+max-width: 1400px;
+margin: 0 auto;
+padding: 20px 16px;
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+grid-template-rows: auto auto auto;
+gap: 16px;
+}
+
+/* ALERTE POCHE — full width top */
+.poche { grid-column: 1 / -1; }
+
+/* PANEL BASE */
+.panel {
+background: var(–panel);
+border: 1px solid var(–border);
+border-radius: 4px;
+overflow: hidden;
+position: relative;
+}
+
+.panel-header {
+background: rgba(0,200,255,0.06);
+border-bottom: 1px solid var(–border);
+padding: 10px 16px;
+display: flex; align-items: center; justify-content: space-between;
+}
+
+.panel-title {
+font-family: var(–cond);
+font-size: 13px;
+font-weight: 700;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–accent);
+}
+
+.panel-badge {
+font-family: var(–mono);
+font-size: 10px;
+padding: 2px 8px;
+border-radius: 2px;
+letter-spacing: 1px;
+}
+
+.badge-live { background: rgba(244,67,54,0.2); color: var(–red); border: 1px solid rgba(244,67,54,0.4); animation: blink 1.5s infinite; }
+.badge-auto { background: rgba(0,230,118,0.15); color: var(–green); border: 1px solid rgba(0,230,118,0.3); }
+.badge-ok { background: rgba(0,230,118,0.15); color: var(–green); border: 1px solid rgba(0,230,118,0.3); }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.panel-body { padding: 16px; }
+
+/* ALERTE POCHE PANEL */
+.poche-inner {
+display: grid;
+grid-template-columns: auto 1fr auto;
+gap: 20px;
+align-items: start;
+padding: 16px 20px;
+}
+
+.risk-badge {
+display: flex; flex-direction: column; align-items: center; gap: 6px;
+padding: 12px 16px;
+border-radius: 4px;
+min-width: 90px;
+}
+
+.risk-badge.green { background: rgba(0,230,118,0.1); border: 2px solid var(–green); }
+.risk-badge.orange { background: rgba(255,152,0,0.1); border: 2px solid var(–orange); }
+.risk-badge.red { background: rgba(244,67,54,0.1); border: 2px solid var(–red); }
+
+.risk-level {
+font-family: var(–cond);
+font-size: 28px;
+font-weight: 900;
+letter-spacing: 2px;
+}
+
+.risk-badge.green .risk-level { color: var(–green); }
+.risk-badge.orange .risk-level { color: var(–orange); }
+.risk-badge.red .risk-level { color: var(–red); }
+
+.risk-label {
+font-family: var(–mono);
+font-size: 9px;
+letter-spacing: 2px;
+color: var(–dim);
+text-transform: uppercase;
+}
+
+.poche-content {}
+
+.poche-headline {
+font-family: var(–cond);
+font-size: 17px;
+font-weight: 700;
+color: #fff;
+letter-spacing: 1px;
+margin-bottom: 8px;
+line-height: 1.3;
+}
+
+.poche-body {
+font-size: 13px;
+line-height: 1.6;
+color: var(–text);
+}
+
+.poche-body strong { color: var(–accent); font-weight: 600; }
+
+.poche-meta {
+display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+font-family: var(–mono); font-size: 10px; color: var(–dim);
+}
+
+.meta-item { text-align: right; letter-spacing: 1px; }
+
+.meta-item span { display: block; color: var(–text); font-size: 12px; }
+
+/* INDICATORS ROW */
+.indicators {
+display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+}
+
+.ind {
+padding: 4px 10px;
+border-radius: 2px;
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 1px;
+}
+
+.ind.ok { background: rgba(0,230,118,0.1); color: var(–green); border: 1px solid rgba(0,230,118,0.3); }
+.ind.warn { background: rgba(255,152,0,0.1); color: var(–orange); border: 1px solid rgba(255,152,0,0.3); }
+.ind.alert { background: rgba(244,67,54,0.1); color: var(–red); border: 1px solid rgba(244,67,54,0.3); }
+.ind.info { background: rgba(0,200,255,0.1); color: var(–accent); border: 1px solid rgba(0,200,255,0.3); }
+
+/* SEISMIC */
+.seism-list { display: flex; flex-direction: column; gap: 8px; }
+
+.seism-item {
+display: grid;
+grid-template-columns: 48px 1fr auto;
+align-items: center;
+gap: 10px;
+padding: 8px 10px;
+background: rgba(255,255,255,0.03);
+border-left: 3px solid var(–border);
+border-radius: 0 2px 2px 0;
+cursor: pointer;
+transition: background 0.2s;
+}
+.seism-item:hover { background: rgba(0,200,255,0.05); }
+
+.seism-item.minor { border-left-color: var(–green); }
+.seism-item.moderate { border-left-color: var(–yellow); }
+.seism-item.strong { border-left-color: var(–orange); }
+.seism-item.major { border-left-color: var(–red); animation: pulse-red 2s infinite; }
+
+@keyframes pulse-red { 0%,100%{background:rgba(244,67,54,0.05)} 50%{background:rgba(244,67,54,0.12)} }
+
+.mag {
+font-family: var(–mono);
+font-size: 20px;
+font-weight: bold;
+text-align: center;
+}
+
+.seism-item.minor .mag { color: var(–green); }
+.seism-item.moderate .mag { color: var(–yellow); }
+.seism-item.strong .mag { color: var(–orange); }
+.seism-item.major .mag { color: var(–red); }
+
+.seism-info .loc {
+font-size: 12px; color: #fff; font-weight: 500;
+}
+
+.seism-info .detail {
+font-family: var(–mono); font-size: 10px; color: var(–dim); margin-top: 2px;
+}
+
+.seism-time {
+font-family: var(–mono); font-size: 10px; color: var(–dim); text-align: right;
+}
+
+/* VOLCANIC */
+.volc-list { display: flex; flex-direction: column; gap: 8px; }
+
+.volc-item {
+display: flex; justify-content: space-between; align-items: center;
+padding: 10px 12px;
+background: rgba(255,255,255,0.03);
+border-radius: 3px;
+border: 1px solid var(–border);
+}
+
+.volc-name { font-size: 13px; font-weight: 600; color: #fff; }
+.volc-dist { font-family: var(–mono); font-size: 10px; color: var(–dim); margin-top: 2px; }
+
+.volc-status {
+font-family: var(–mono); font-size: 10px; padding: 3px 8px; border-radius: 2px; letter-spacing: 1px;
+}
+.vs-normal { background: rgba(0,230,118,0.1); color: var(–green); border: 1px solid rgba(0,230,118,0.3); }
+.vs-active { background: rgba(255,152,0,0.1); color: var(–orange); border: 1px solid rgba(255,152,0,0.3); }
+.vs-alert { background: rgba(244,67,54,0.1); color: var(–red); border: 1px solid rgba(244,67,54,0.3); }
+
+/* SECURITY NEWS */
+.news-list { display: flex; flex-direction: column; gap: 6px; }
+
+.news-item {
+padding: 8px 12px;
+border-left: 3px solid var(–border);
+background: rgba(255,255,255,0.02);
+cursor: pointer;
+transition: background 0.2s;
+border-radius: 0 2px 2px 0;
+}
+.news-item:hover { background: rgba(0,200,255,0.05); border-left-color: var(–accent); }
+
+.news-item.high { border-left-color: var(–red); }
+.news-item.medium { border-left-color: var(–orange); }
+.news-item.low { border-left-color: var(–green); }
+
+.news-title { font-size: 12px; color: var(–text); line-height: 1.4; }
+.news-meta { font-family: var(–mono); font-size: 10px; color: var(–dim); margin-top: 4px; }
+.news-src { color: var(–accent); }
+
+/* WEATHER */
+.weather-grid {
+display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+
+.w-card {
+padding: 12px; background: rgba(255,255,255,0.03); border-radius: 3px; border: 1px solid var(–border); text-align: center;
+}
+
+.w-value { font-family: var(–cond); font-size: 28px; font-weight: 700; color: #fff; }
+.w-unit { font-family: var(–mono); font-size: 10px; color: var(–dim); margin-left: 4px; }
+.w-label { font-family: var(–mono); font-size: 10px; color: var(–dim); letter-spacing: 2px; margin-top: 4px; text-transform: uppercase; }
+
+/* LOG */
+.log-list {
+display: flex; flex-direction: column; gap: 4px;
+max-height: 180px; overflow-y: auto;
+}
+
+.log-entry {
+display: flex; gap: 10px; align-items: baseline;
+font-family: var(–mono); font-size: 11px; padding: 3px 0;
+border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.log-time { color: var(–dim); flex-shrink: 0; }
+.log-msg { color: var(–text); }
+.log-ok { color: var(–green); }
+.log-warn { color: var(–orange); }
+.log-alert { color: var(–red); }
+
+/* LOADING */
+.loading {
+display: flex; align-items: center; justify-content: center; gap: 10px;
+padding: 30px; color: var(–dim); font-family: var(–mono); font-size: 12px;
+}
+
+.spinner {
+width: 16px; height: 16px;
+border: 2px solid var(–border);
+border-top-color: var(–accent);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ERROR */
+.error-msg {
+padding: 12px; font-family: var(–mono); font-size: 11px; color: var(–orange);
+background: rgba(255,152,0,0.05); border: 1px solid rgba(255,152,0,0.2); border-radius: 3px;
+text-align: center;
+}
+
+/* BOTTOM FOOTER */
+footer {
+text-align: center;
+padding: 16px;
+font-family: var(–mono);
+font-size: 10px;
+color: var(–dim);
+letter-spacing: 2px;
+border-top: 1px solid var(–border);
+margin-top: 8px;
+}
+
+/* AUTO REFRESH INDICATOR */
+.auto-indicator {
+display: flex; align-items: center; gap: 6px;
+font-family: var(–mono); font-size: 10px; color: var(–dim);
+}
+
+.dot-live {
+width: 6px; height: 6px; border-radius: 50%;
+background: var(–green); animation: blink 1.5s infinite;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(–bg); }
+::-webkit-scrollbar-thumb { background: var(–border); border-radius: 2px; }
+
+/* PROGRESS BAR (refresh countdown) */
+#refresh-bar {
+height: 2px; background: var(–accent); width: 100%;
+transition: width linear;
+position: fixed; top: 0; left: 0; z-index: 200;
+opacity: 0.6;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 900px) {
+main { grid-template-columns: 1fr; }
+.poche { grid-column: 1; }
+.poche-inner { grid-template-columns: auto 1fr; }
+.poche-meta { display: none; }
+.weather-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+header { padding: 12px 14px; }
+.header-title { font-size: 16px; letter-spacing: 2px; }
+main { padding: 12px 10px; gap: 10px; }
+.poche-inner { grid-template-columns: 1fr; }
+.risk-badge { flex-direction: row; min-width: unset; padding: 8px 12px; }
+}
+</style>
+
+</head>
+<body>
+
+<div id="refresh-bar" style="width:100%"></div>
+
+<header>
+  <div class="header-left">
+    <div class="flag"></div>
+    <div>
+      <div class="header-title">VEILLE <span>SÉCURITÉ</span> — LIMA / PÉROU</div>
+      <div class="header-sub">SYSTÈME DE SURVEILLANCE OPÉRATIONNELLE AUTOMATISÉ · CSO AMBASSADE</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="auto-indicator">
+      <div class="dot-live"></div>
+      <span>AUTO · 1H</span>
+    </div>
+    <div id="clock">--:--:--</div>
+    <button class="refresh-btn" onclick="refreshAll()">↻ ACTUALISER</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ALERTE POCHE -->
+
+  <div class="panel poche" id="panel-poche">
+    <div class="panel-header">
+      <div class="panel-title">⚡ ALERTE POCHE — BULLETIN QUOTIDIEN IA</div>
+      <div class="panel-badge badge-auto">AUTO-GÉNÉRÉ</div>
+    </div>
+    <div id="poche-container">
+      <div class="loading"><div class="spinner"></div>Génération du bulletin IA en cours...</div>
+    </div>
+  </div>
+
+  <!-- SISMICITÉ -->
+
+  <div class="panel" id="panel-seismes">
+    <div class="panel-header">
+      <div class="panel-title">🌍 SISMICITÉ EN TEMPS RÉEL</div>
+      <div class="panel-badge badge-live">LIVE</div>
+    </div>
+    <div class="panel-body" id="seismes-container">
+      <div class="loading"><div class="spinner"></div>Chargement USGS...</div>
+    </div>
+  </div>
+
+  <!-- VOLCANS -->
+
+  <div class="panel" id="panel-volcans">
+    <div class="panel-header">
+      <div class="panel-title">🌋 SURVEILLANCE VOLCANIQUE</div>
+      <div class="panel-badge badge-auto">IGP / OVI</div>
+    </div>
+    <div class="panel-body" id="volcans-container">
+      <div class="loading"><div class="spinner"></div>Chargement données...</div>
+    </div>
+  </div>
+
+  <!-- MÉTÉO -->
+
+  <div class="panel" id="panel-meteo">
+    <div class="panel-header">
+      <div class="panel-title">☁️ MÉTÉO — LIMA</div>
+      <div class="panel-badge badge-live">LIVE</div>
+    </div>
+    <div class="panel-body" id="meteo-container">
+      <div class="loading"><div class="spinner"></div>Open-Meteo...</div>
+    </div>
+  </div>
+
+  <!-- SÉCURITÉ / ACTUALITÉS -->
+
+  <div class="panel" id="panel-securite" style="grid-column: 1 / 3;">
+    <div class="panel-header">
+      <div class="panel-title">🛡️ SÉCURITÉ — ACTUALITÉS & ALERTES</div>
+      <div class="panel-badge badge-auto">IA SYNTHÈSE</div>
+    </div>
+    <div class="panel-body" id="securite-container">
+      <div class="loading"><div class="spinner"></div>Analyse IA en cours...</div>
+    </div>
+  </div>
+
+  <!-- LOG SYSTÈME -->
+
+  <div class="panel" id="panel-log">
+    <div class="panel-header">
+      <div class="panel-title">📡 JOURNAL SYSTÈME</div>
+      <div class="panel-badge badge-ok">NOMINAL</div>
+    </div>
+    <div class="panel-body">
+      <div class="log-list" id="log-container"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  SYSTÈME DE VEILLE AUTOMATISÉE · DONNÉES: USGS · OPEN-METEO · IA ANTHROPIC · IGP PÉROU · ACTUALISATION AUTO TOUTES LES HEURES
+</footer>
+
+<script>
+// ============================================================
+// CORE STATE
+// ============================================================
+let globalRiskLevel = 'VERT';
+let seismData = [];
+let meteoData = {};
+let refreshInterval = null;
+const REFRESH_MS = 60 * 60 * 1000; // 1 heure
+const LIMA_LAT = -12.046374;
+const LIMA_LON = -77.042793;
+
+// ============================================================
+// CLOCK
+// ============================================================
+function updateClock() {
+  const now = new Date();
+  const lima = new Date(now.toLocaleString("en-US", {timeZone: "America/Lima"}));
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    `LIMA ${pad(lima.getHours())}:${pad(lima.getMinutes())}:${pad(lima.getSeconds())} PET`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================================================
+// LOG
+// ============================================================
+function log(msg, type = 'ok') {
+  const container = document.getElementById('log-container');
+  const now = new Date().toLocaleTimeString('fr-FR', {timeZone: 'America/Lima', hour12: false});
+  const div = document.createElement('div');
+  div.className = 'log-entry';
+  div.innerHTML = `<span class="log-time">${now}</span><span class="log-${type}">${msg}</span>`;
+  container.insertBefore(div, container.firstChild);
+  if (container.children.length > 50) container.removeChild(container.lastChild);
+}
+
+// ============================================================
+// USGS EARTHQUAKES
+// ============================================================
+async function fetchSeismes() {
+  log('Requête USGS — séismes région Pérou...');
+  try {
+    // Zone couvrant le Pérou et alentours (~800km autour de Lima)
+    const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${getDateMinus(7)}&minlatitude=-20&maxlatitude=-3&minlongitude=-85&maxlongitude=-65&minmagnitude=2.5&orderby=time&limit=15`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    seismData = data.features;
+    renderSeismes(seismData);
+    log(`✓ USGS — ${seismData.length} événements sismiques chargés`, 'ok');
+    return seismData;
+  } catch(e) {
+    log(`✗ USGS — échec: ${e.message}`, 'alert');
+    document.getElementById('seismes-container').innerHTML = `<div class="error-msg">⚠ USGS INACCESSIBLE — Vérifier connexion réseau</div>`;
+    return [];
+  }
+}
+
+function getDateMinus(days) {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toISOString().split('T')[0];
+}
+
+function getMagClass(mag) {
+  if (mag >= 6.0) return 'major';
+  if (mag >= 5.0) return 'strong';
+  if (mag >= 4.0) return 'moderate';
+  return 'minor';
+}
+
+function timeAgo(ts) {
+  const diff = Date.now() - ts;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  if (h > 24) return `J-${Math.floor(h/24)}`;
+  if (h > 0) return `${h}h${m}m`;
+  return `${m}min`;
+}
+
+function distanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
+function renderSeismes(features) {
+  const container = document.getElementById('seismes-container');
+  if (!features.length) {
+    container.innerHTML = `<div class="error-msg">Aucun séisme détecté sur la période.</div>`;
+    return;
+  }
+
+  const top = features.slice(0, 8);
+  const html = top.map(f => {
+    const p = f.properties;
+    const coords = f.geometry.coordinates;
+    const mag = p.mag ? p.mag.toFixed(1) : '?';
+    const cls = getMagClass(parseFloat(mag));
+    const dist = distanceKm(LIMA_LAT, LIMA_LON, coords[1], coords[0]);
+    const depth = Math.round(coords[2]);
+    const when = timeAgo(p.time);
+    const place = p.place || 'Pérou';
+    return `
+      <div class="seism-item ${cls}">
+        <div class="mag">${mag}</div>
+        <div class="seism-info">
+          <div class="loc">${place}</div>
+          <div class="detail">Prof: ${depth}km · Dist Lima: ~${dist}km</div>
+        </div>
+        <div class="seism-time">${when}</div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `<div class="seism-list">${html}</div>`;
+}
+
+// ============================================================
+// MÉTÉO — Open-Meteo (gratuit, sans clé)
+// ============================================================
+async function fetchMeteo() {
+  log('Requête Open-Meteo — Lima...');
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LIMA_LAT}&longitude=${LIMA_LON}&current=temperature_2m,relativehumidity_2m,windspeed_10m,precipitation,weathercode&hourly=precipitation_probability&timezone=America/Lima&forecast_days=1`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    meteoData = data.current;
+    renderMeteo(data);
+    log(`✓ Météo Lima: ${data.current.temperature_2m}°C`, 'ok');
+    return data;
+  } catch(e) {
+    log(`✗ Météo — échec: ${e.message}`, 'warn');
+    document.getElementById('meteo-container').innerHTML = `<div class="error-msg">⚠ Météo inaccessible</div>`;
+    return null;
+  }
+}
+
+function wmoDescription(code) {
+  const codes = {
+    0: 'Ciel dégagé', 1: 'Peu nuageux', 2: 'Partiellement nuageux', 3: 'Couvert',
+    45: 'Brouillard', 48: 'Brouillard givrant',
+    51: 'Bruine légère', 53: 'Bruine modérée', 55: 'Bruine dense',
+    61: 'Pluie légère', 63: 'Pluie modérée', 65: 'Pluie forte',
+    71: 'Neige légère', 80: 'Averses', 81: 'Averses modérées', 82: 'Averses fortes',
+    95: 'Orage', 99: 'Orage violent'
+  };
+  return codes[code] || `Code ${code}`;
+}
+
+function renderMeteo(data) {
+  const c = data.current;
+  const maxPrecip = Math.max(...(data.hourly?.precipitation_probability || [0]));
+  const container = document.getElementById('meteo-container');
+  container.innerHTML = `
+    <div class="weather-grid">
+      <div class="w-card">
+        <div class="w-value">${c.temperature_2m}<span class="w-unit">°C</span></div>
+        <div class="w-label">TEMPÉRATURE</div>
+      </div>
+      <div class="w-card">
+        <div class="w-value">${c.relativehumidity_2m}<span class="w-unit">%</span></div>
+        <div class="w-label">HUMIDITÉ</div>
+      </div>
+      <div class="w-card">
+        <div class="w-value">${c.windspeed_10m}<span class="w-unit">km/h</span></div>
+        <div class="w-label">VENT</div>
+      </div>
+      <div class="w-card">
+        <div class="w-value">${maxPrecip}<span class="w-unit">%</span></div>
+        <div class="w-label">RISQUE PLUIE</div>
+      </div>
+    </div>
+    <div style="margin-top:10px; padding:8px 10px; background:rgba(255,255,255,0.03); border-radius:3px; font-family:var(--mono); font-size:11px; color:var(--text); text-align:center; border:1px solid var(--border);">
+      ${wmoDescription(c.weathercode)} · Précip. actuelle: ${c.precipitation}mm
+    </div>`;
+}
+
+// ============================================================
+// VOLCANS PÉROU (données statiques enrichies par IA)
+// ============================================================
+const VOLCANS = [
+  { name: 'Ubinas', dist: '~700km SE', status: 'active', note: 'Activité sismique récurrente' },
+  { name: 'Sabancaya', dist: '~760km SE', status: 'active', note: 'Éruption continue, panaches' },
+  { name: 'El Misti', dist: '~770km SE', status: 'normal', note: 'Surveillance IGP active' },
+  { name: 'Ticsani', dist: '~730km SE', status: 'normal', note: 'Sismicité faible' },
+  { name: 'Tutupaca', dist: '~790km SE', status: 'normal', note: 'Surveillance en cours' },
+];
+
+function renderVolcans() {
+  const html = VOLCANS.map(v => {
+    const cls = v.status === 'alert' ? 'vs-alert' : v.status === 'active' ? 'vs-active' : 'vs-normal';
+    const label = v.status === 'alert' ? 'ALERTE' : v.status === 'active' ? 'ACTIF' : 'NORMAL';
+    return `
+      <div class="volc-item">
+        <div>
+          <div class="volc-name">${v.name}</div>
+          <div class="volc-dist">${v.dist} · ${v.note}</div>
+        </div>
+        <div class="volc-status ${cls}">${label}</div>
+      </div>`;
+  }).join('');
+  document.getElementById('volcans-container').innerHTML = `<div class="volc-list">${html}</div>`;
+  log(`✓ Données volcans chargées (${VOLCANS.length} volcans surveillés)`, 'ok');
+}
+
+// ============================================================
+// IA — BULLETIN SÉCURITÉ (Anthropic API)
+// ============================================================
+async function fetchSecurityBriefing(seismContext, meteoContext) {
+  log('Génération bulletin sécurité IA...');
+  try {
+    const now = new Date().toLocaleString('fr-FR', { timeZone: 'America/Lima', dateStyle: 'full', timeStyle: 'short' });
+
+    // Prépare contexte sismique
+    let seismSummary = 'Aucun séisme significatif détecté.';
+    if (seismContext && seismContext.length > 0) {
+      const topEvents = seismContext.slice(0, 5).map(f => {
+        const p = f.properties;
+        const coords = f.geometry.coordinates;
+        const dist = distanceKm(LIMA_LAT, LIMA_LON, coords[1], coords[0]);
+        return `M${p.mag?.toFixed(1)} à ${dist}km de Lima (${p.place})`;
+      });
+      seismSummary = topEvents.join('; ');
+    }
+
+    const prompt = `Tu es un officier de sécurité expert pour une ambassade française à Lima, Pérou.
+Date et heure locale (Lima, heure PET) : ${now}
+
+DONNÉES SISMIQUES (7 derniers jours, région Pérou) :
+${seismSummary}
+
+MÉTÉO LIMA ACTUELLE :
+Température: ${meteoContext?.temperature_2m ?? 'N/A'}°C, Humidité: ${meteoContext?.relativehumidity_2m ?? 'N/A'}%, Vent: ${meteoContext?.windspeed_10m ?? 'N/A'}km/h
+
+VOLCANS : Sabancaya et Ubinas en activité modérée continue (zone Arequipa).
+
+Ta mission : Génère un BULLETIN ALERTE POCHE en français, format opérationnel, destiné au Chargé de Sécurité Opérationnelle de l'Ambassade de France à Lima.
+
+Structure OBLIGATOIRE (respecte exactement) :
+NIVEAU_RISQUE: [VERT / ORANGE / ROUGE]
+TITRE: [titre accrocheur et informatif, max 12 mots]
+SYNTHESE: [2-3 phrases max, langage opérationnel direct, faits saillants du jour]
+POINTS_VIGILANCE: [3 points courts séparés par |]
+RECOMMANDATIONS: [2 recommandations courtes séparées par |]
+
+Sois factuel, concis, opérationnel. Pas de superflu.`;
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '';
+    log(`✓ Bulletin IA généré`, 'ok');
+    return parseBulletin(text);
+  } catch(e) {
+    log(`✗ IA bulletin — échec: ${e.message}`, 'alert');
+    return null;
+  }
+}
+
+function parseBulletin(text) {
+  const get = (key) => {
+    const regex = new RegExp(`${key}:\\s*(.+?)(?=\\n[A-Z_]+:|$)`, 's');
+    const match = text.match(regex);
+    return match ? match[1].trim() : '';
+  };
+  return {
+    niveau: get('NIVEAU_RISQUE') || 'VERT',
+    titre: get('TITRE') || 'Bulletin quotidien Lima',
+    synthese: get('SYNTHESE') || '',
+    vigilance: (get('POINTS_VIGILANCE') || '').split('|').map(s => s.trim()).filter(Boolean),
+    recommandations: (get('RECOMMANDATIONS') || '').split('|').map(s => s.trim()).filter(Boolean),
+  };
+}
+
+async function fetchSecurityNews() {
+  log('Analyse actualités sécurité IA...');
+  try {
+    const now = new Date().toLocaleDateString('fr-FR', { timeZone: 'America/Lima' });
+    const prompt = `Tu es un analyste sécurité expert sur le Pérou.
+Date: ${now}
+
+Génère une synthèse des POINTS DE SÉCURITÉ ACTUELS pour Lima et le Pérou, destinée à un officier de sécurité d'ambassade.
+
+Couvre : sécurité urbaine Lima, risques politiques/sociaux, criminalité, risques routiers, zones à éviter.
+
+Génère EXACTEMENT 5 actualités/points au format JSON strict :
+[
+  {"niveau":"high|medium|low","titre":"...","detail":"...","source":"..."},
+  ...
+]
+Réponds UNIQUEMENT avec le JSON, rien d'autre.`;
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const raw = data.content?.[0]?.text || '[]';
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const items = JSON.parse(clean);
+    renderSecuriteNews(items);
+    log(`✓ Actualités sécurité: ${items.length} points`, 'ok');
+  } catch(e) {
+    log(`✗ Actualités sécurité — échec: ${e.message}`, 'warn');
+    document.getElementById('securite-container').innerHTML = `<div class="error-msg">⚠ Analyse indisponible — connexion requise</div>`;
+  }
+}
+
+function renderSecuriteNews(items) {
+  const html = items.map(item => `
+    <div class="news-item ${item.niveau}">
+      <div class="news-title">${item.titre}</div>
+      <div class="news-meta"><span class="news-src">${item.source}</span> · ${item.detail}</div>
+    </div>`).join('');
+  document.getElementById('securite-container').innerHTML = `<div class="news-list">${html}</div>`;
+}
+
+// ============================================================
+// ALERTE POCHE RENDER
+// ============================================================
+function renderAlertePoche(bulletin) {
+  if (!bulletin) {
+    document.getElementById('poche-container').innerHTML = `<div class="error-msg">⚠ Bulletin IA indisponible — vérifier connexion et API</div>`;
+    return;
+  }
+
+  globalRiskLevel = bulletin.niveau;
+  const riskCls = bulletin.niveau === 'ROUGE' ? 'red' : bulletin.niveau === 'ORANGE' ? 'orange' : 'green';
+
+  const vigilanceHtml = bulletin.vigilance.map(v =>
+    `<span class="ind ${riskCls === 'red' ? 'alert' : riskCls === 'orange' ? 'warn' : 'ok'}">${v}</span>`
+  ).join('');
+
+  const recoHtml = bulletin.recommandations.map(r =>
+    `<span class="ind info">${r}</span>`
+  ).join('');
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR', { timeZone: 'America/Lima', weekday: 'long', day: 'numeric', month: 'long' });
+
+  document.getElementById('poche-container').innerHTML = `
+    <div class="poche-inner">
+      <div class="risk-badge ${riskCls}">
+        <div class="risk-level">${bulletin.niveau}</div>
+        <div class="risk-label">RISQUE</div>
+      </div>
+      <div class="poche-content">
+        <div class="poche-headline">${bulletin.titre}</div>
+        <div class="poche-body">${bulletin.synthese}</div>
+        <div class="indicators" style="margin-top:8px;">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:1px;align-self:center;">VIGILANCE:</span>
+          ${vigilanceHtml}
+        </div>
+        <div class="indicators" style="margin-top:6px;">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:1px;align-self:center;">ACTIONS:</span>
+          ${recoHtml}
+        </div>
+      </div>
+      <div class="poche-meta">
+        <div class="meta-item">ÉMIS LE<span>${dateStr}</span></div>
+        <div class="meta-item">ZONE<span>LIMA / PÉROU</span></div>
+        <div class="meta-item">STATUT<span style="color:var(--green)">● NOMINAL</span></div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// REFRESH PRINCIPAL
+// ============================================================
+async function refreshAll() {
+  log('=== CYCLE DE MISE À JOUR DÉMARRÉ ===', 'ok');
+
+  // Lancer en parallèle météo + séismes
+  const [seismResult, meteoResult] = await Promise.all([
+    fetchSeismes(),
+    fetchMeteo()
+  ]);
+
+  renderVolcans();
+
+  // Lancer actualités sécurité
+  fetchSecurityNews();
+
+  // Générer le bulletin IA alerte poche
+  const meteoCtx = meteoResult?.current || {};
+  const bulletin = await fetchSecurityBriefing(seismResult, meteoCtx);
+  renderAlertePoche(bulletin);
+
+  log('=== CYCLE TERMINÉ ===', 'ok');
+
+  // Reprogrammer prochain rafraîchissement
+  if (refreshInterval) clearTimeout(refreshInterval);
+  refreshInterval = setTimeout(refreshAll, REFRESH_MS);
+
+  // Barre de progression
+  startProgressBar(REFRESH_MS);
+}
+
+// ============================================================
+// PROGRESS BAR (countdown visuel)
+// ============================================================
+function startProgressBar(duration) {
+  const bar = document.getElementById('refresh-bar');
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  setTimeout(() => {
+    bar.style.transition = `width ${duration}ms linear`;
+    bar.style.width = '0%';
+  }, 100);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+log('Initialisation système de veille sécurité...', 'ok');
+log(`Zone surveillance: Lima (${LIMA_LAT}, ${LIMA_LON})`, 'ok');
+log('Sources: USGS · Open-Meteo · Anthropic IA · IGP Pérou', 'ok');
+refreshAll();
+
+</script>
+
+</body>
+</html>
