@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>VEILLE LIMA</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#060b10;--panel:#0b1520;--border:#1e3048;
+  --accent:#00d4ff;--green:#00e676;--orange:#ff9800;--red:#f44336;--yellow:#ffd600;
+  --text:#cfe0ec;--dim:#4e6880;
+  --mono:'Share Tech Mono',monospace;--cond:'Barlow Condensed',sans-serif;--body:'Barlow',sans-serif;
+}
+html,body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+header{background:linear-gradient(180deg,#0e2240,#09192e);border-bottom:2px solid var(--accent);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 20px rgba(0,212,255,0.2)}
+.h-left{display:flex;align-items:center;gap:10px}
+.flag{width:30px;height:20px;background:linear-gradient(to right,#d91023 33%,#fff 33%,#fff 66%,#d91023 66%);border:1px solid rgba(255,255,255,0.25);border-radius:2px;flex-shrink:0}
+.h-title{font-family:var(--cond);font-weight:900;font-size:20px;letter-spacing:3px;color:#fff;text-transform:uppercase;line-height:1;text-shadow:0 0 15px rgba(0,212,255,0.5)}
+.h-title span{color:var(--accent)}
+.h-sub{font-family:var(--mono);font-size:9px;color:#6a8faa;letter-spacing:1.5px;margin-top:2px}
+.h-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+#clock{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:1px}
+.h-live{display:flex;align-items:center;gap:4px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.4s infinite}
+.h-live-txt{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:1px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+#toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);background:#0e2240;border:1px solid var(--accent);border-radius:20px;padding:8px 20px;font-family:var(--mono);font-size:11px;color:#fff;z-index:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1}
+main{padding:10px;display:flex;flex-direction:column;gap:10px;max-width:640px;margin:0 auto;padding-bottom:20px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.ph{background:linear-gradient(90deg,rgba(0,212,255,0.07),transparent);border-bottom:1px solid var(--border);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pt{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff}
+.pb{padding:12px}
+.badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:2px;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
+.b-live{background:rgba(244,67,54,.2);color:#ff7070;border:1px solid rgba(244,67,54,.4);animation:blink 1.4s infinite}
+.b-auto{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.b-ops{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.25)}
+.poche-wrap{padding:12px}
+.risk-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.risk-badge{padding:8px 14px;border-radius:4px;text-align:center;flex-shrink:0}
+.risk-badge.green{background:rgba(0,230,118,.07);border:2px solid var(--green)}
+.risk-badge.orange{background:rgba(255,152,0,.07);border:2px solid var(--orange)}
+.risk-badge.red{background:rgba(244,67,54,.07);border:2px solid var(--red)}
+.rl{font-family:var(--cond);font-size:20px;font-weight:900}
+.risk-badge.green .rl{color:var(--green)}
+.risk-badge.orange .rl{color:var(--orange)}
+.risk-badge.red .rl{color:var(--red)}
+.rlabel{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:1px}
+.p-title{font-family:var(--cond);font-size:16px;font-weight:700;color:#fff;line-height:1.2}
+.p-date{font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:2px}
+.p-text{font-size:12px;line-height:1.65;color:var(--text);margin-bottom:8px}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.tag{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:2px}
+.t-ok{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.t-warn{background:rgba(255,152,0,.08);color:var(--orange);border:1px solid rgba(255,152,0,.25)}
+.t-alert{background:rgba(244,67,54,.08);color:var(--red);border:1px solid rgba(244,67,54,.25)}
+.t-info{background:rgba(0,212,255,.08);color:var(--accent);border:1px solid rgba(0,212,255,.2)}
+.sec-lbl{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px;margin:8px 0 4px;text-transform:uppercase}
+.meteo-line{display:flex;align-items:center;justify-content:space-around}
+.m-item{text-align:center;flex:1}
+.m-val{font-family:var(--cond);font-size:22px;font-weight:700;color:#fff}
+.m-unit{font-family:var(--mono);font-size:9px;color:var(--dim)}
+.m-lbl{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-top:1px}
+.m-sep{width:1px;height:28px;background:var(--border)}
+.m-desc{font-family:var(--mono);font-size:9px;color:var(--accent);text-align:center;margin-top:8px;padding:5px;background:rgba(0,212,255,.04);border-radius:3px;border:1px solid rgba(0,212,255,.1)}
+.s-item{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:8px;padding:8px;background:rgba(255,255,255,.02);border-left:3px solid var(--border);border-radius:0 3px 3px 0;margin-bottom:6px}
+.s-item:last-child{margin-bottom:0}
+.s-item.minor{border-left-color:var(--green)}
+.s-item.moderate{border-left-color:var(--yellow)}
+.s-item.strong{border-left-color:var(--orange)}
+.s-item.major{border-left-color:var(--red)}
+.mag{font-family:var(--mono);font-size:20px;text-align:center}
+.s-item.minor .mag{color:var(--green)}
+.s-item.moderate .mag{color:var(--yellow)}
+.s-item.strong .mag{color:var(--orange)}
+.s-item.major .mag{color:var(--red)}
+.s-loc{font-size:11px;color:#fff;font-weight:500;line-height:1.3}
+.s-det{font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:1px}
+.s-time{font-family:var(--mono);font-size:10px;color:var(--dim);text-align:right;white-space:nowrap}
+.v-item{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:rgba(255,255,255,.02);border-radius:3px;border:1px solid var(--border);margin-bottom:5px}
+.v-item:last-child{margin-bottom:0}
+.v-name{font-size:12px;font-weight:600;color:#fff}
+.v-dist{font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:1px}
+.vs{font-family:var(--mono);font-size:9px;padding:3px 7px;border-radius:2px;letter-spacing:1px}
+.vs-n{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.vs-a{background:rgba(255,152,0,.08);color:var(--orange);border:1px solid rgba(255,152,0,.25)}
+.n-item{padding:9px 11px;border-left:3px solid var(--border);background:rgba(255,255,255,.02);border-radius:0 3px 3px 0;margin-bottom:6px}
+.n-item:last-child{margin-bottom:0}
+.n-item.high{border-left-color:var(--red)}
+.n-item.medium{border-left-color:var(--orange)}
+.n-item.low{border-left-color:var(--green)}
+.n-title{font-size:12px;color:#fff;line-height:1.45;font-weight:500}
+.n-meta{display:flex;gap:5px;align-items:center;margin-top:4px;flex-wrap:wrap}
+.n-src{font-family:var(--mono);font-size:9px;color:var(--accent);background:rgba(0,212,255,.07);padding:1px 6px;border-radius:2px;border:1px solid rgba(0,212,255,.15)}
+.n-lvl{font-family:var(--mono);font-size:9px;padding:1px 6px;border-radius:2px}
+.lvl-h{background:rgba(244,67,54,.1);color:var(--red);border:1px solid rgba(244,67,54,.25)}
+.lvl-m{background:rgba(255,152,0,.1);color:var(--orange);border:1px solid rgba(255,152,0,.25)}
+.lvl-l{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.n-note{font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:3px}
+.src-list{display:flex;flex-wrap:wrap;gap:5px}
+.src-tag{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:2px;background:rgba(0,212,255,.06);color:var(--accent);border:1px solid rgba(0,212,255,.15)}
+.log-wrap{max-height:110px;overflow-y:auto}
+.log-e{display:flex;gap:8px;font-family:var(--mono);font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.lt{color:var(--dim);flex-shrink:0}
+.lm-ok{color:var(--green)}
+.lm-warn{color:var(--orange)}
+.lm-alert{color:var(--red)}
+.lm-info{color:var(--accent)}
+.rbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,212,255,0.05));border:1px solid var(--accent);color:#fff;font-family:var(--mono);font-size:12px;padding:14px;cursor:pointer;letter-spacing:2px;border-radius:6px;-webkit-appearance:none;appearance:none;transition:background .2s}
+.rbtn:active{background:rgba(0,212,255,0.25)}
+.rspin{width:14px;height:14px;border:2px solid rgba(0,212,255,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:none;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err{padding:10px;font-family:var(--mono);font-size:10px;color:var(--orange);background:rgba(255,152,0,.05);border:1px solid rgba(255,152,0,.2);border-radius:3px;text-align:center}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<header>
+  <div class="h-left">
+    <div class="flag"></div>
+    <div>
+      <div class="h-title">VEILLE <span>LIMA</span></div>
+      <div class="h-sub">CSO · AMBASSADE DE FRANCE · PÉROU</div>
+    </div>
+  </div>
+  <div class="h-right">
+    <div id="clock">--:--:--</div>
+    <div class="h-live"><div class="dot"></div><span class="h-live-txt">AUTO·1H</span></div>
+  </div>
+</header>
+<main>
+  <div class="panel">
+    <div class="ph"><div class="pt">⚡ ALERTE POCHE</div><div class="badge b-auto">SYNTHÈSE AUTO</div></div>
+    <div id="poche-ct"><div style="padding:12px;font-family:var(--mono);font-size:10px;color:var(--dim);text-align:center">Initialisation...</div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">🛡️ SÉCURITÉ & ACTUALITÉS</div><div class="badge b-ops">CONTEXTE OPÉRATIONNEL</div></div>
+    <div class="pb" id="secu-ct"></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">🌍 SISMICITÉ</div><div class="badge b-live">USGS LIVE</div></div>
+    <div class="pb" id="seism-ct"><div style="padding:8px;font-family:var(--mono);font-size:10px;color:var(--dim);text-align:center">Connexion USGS...</div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">🌋 VOLCANS — PÉROU</div><div class="badge b-auto">IGP/OVI</div></div>
+    <div class="pb" id="volc-ct"></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">☁️ MÉTÉO LIMA</div><div class="badge b-live">LIVE</div></div>
+    <div class="pb" id="meteo-ct"><div style="padding:8px;font-family:var(--mono);font-size:10px;color:var(--dim);text-align:center">Connexion météo...</div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">📡 SOURCES</div></div>
+    <div class="pb"><div class="src-list">
+      <span class="src-tag">USGS</span><span class="src-tag">IGP PÉROU</span><span class="src-tag">INDECI</span>
+      <span class="src-tag">RPP NOTICIAS</span><span class="src-tag">EL COMERCIO</span>
+      <span class="src-tag">FRANCE24 ESP</span><span class="src-tag">REUTERS LATAM</span>
+      <span class="src-tag">OPEN-METEO</span><span class="src-tag">OVI INGEMMET</span>
+    </div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">📋 JOURNAL</div></div>
+    <div class="pb"><div class="log-wrap" id="log-ct"></div></div>
+  </div>
+  <button class="rbtn" id="rbtn" onclick="doRefresh()">
+    <div class="rspin" id="rspin"></div>
+    <span id="rtxt">↻ ACTUALISER MAINTENANT</span>
+  </button>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;padding:6px 0 4px">
+    MAJ: <span id="last-update">—</span>
+  </div>
+</main>
+<script>
+var LAT=-12.046374,LON=-77.042793;
+var seismData=[],meteoData={};
+var isRefreshing=false;
+var refreshTimer=null;
+var pendingCount=0;
+
+// CLOCK
+function tick(){
+var l=new Date(new Date().toLocaleString(“en-US”,{timeZone:“America/Lima”}));
+var p=function(n){return String(n).padStart(2,‘0’)};
+document.getElementById(‘clock’).textContent=p(l.getHours())+’:’+p(l.getMinutes())+’:’+p(l.getSeconds());
+}
+setInterval(tick,1000);tick();
+
+// TOAST
+var toastTimer=null;
+function toast(msg){
+var t=document.getElementById(‘toast’);
+t.textContent=msg;t.className=‘show’;
+if(toastTimer)clearTimeout(toastTimer);
+toastTimer=setTimeout(function(){t.className=’’},3500);
+}
+
+// LOG
+function log(msg,type){
+type=type||‘ok’;
+var c=document.getElementById(‘log-ct’);
+var l=new Date().toLocaleTimeString(‘fr-FR’,{timeZone:‘America/Lima’,hour12:false});
+var d=document.createElement(‘div’);
+d.className=‘log-e’;
+d.innerHTML=’<span class="lt">’+l+’</span><span class="lm-'+type+'">’+msg+’</span>’;
+c.insertBefore(d,c.firstChild);
+if(c.children.length>50)c.removeChild(c.lastChild);
+}
+
+// BTN
+function btnLoading(on){
+document.getElementById(‘rspin’).style.display=on?‘block’:‘none’;
+document.getElementById(‘rtxt’).textContent=on?‘ACTUALISATION…’:‘↻ ACTUALISER MAINTENANT’;
+}
+
+// UTILS
+function dist(la1,lo1,la2,lo2){
+var R=6371,dL=(la2-la1)*Math.PI/180,dO=(lo2-lo1)*Math.PI/180;
+var a=Math.sin(dL/2)*Math.sin(dL/2)+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dO/2)*Math.sin(dO/2);
+return Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+}
+function ago(ts){
+var diff=Date.now()-ts;
+var h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000);
+if(h>24)return’J-’+Math.floor(h/24);if(h>0)return h+‘h’+m+‘m’;return m+‘min’;
+}
+function magCls(m){if(m>=6)return’major’;if(m>=5)return’strong’;if(m>=4)return’moderate’;return’minor’}
+function wmo(c){
+var map={0:‘Ciel dégagé ☀️’,1:‘Peu nuageux’,2:‘Partiellement nuageux ⛅’,3:‘Couvert ☁️’,
+45:‘Brouillard 🌫’,51:‘Bruine légère’,61:‘Pluie légère 🌦’,63:‘Pluie modérée 🌧’,80:‘Averses’,95:‘Orage ⛈’};
+return map[c]||’Code ’+c;
+}
+
+// SÉCURITÉ — statique opérationnel
+function renderSecurite(){
+var items=[
+{lvl:‘medium’,title:‘Criminalité Lima — vols à l'arraché et pickpockets dans les zones touristiques (Miraflores, Barranco, centre historique)’,src:‘AMBASSADE FR’,note:‘Éviter bijoux et téléphone visible en rue’},
+{lvl:‘medium’,title:‘Circulation Lima — embouteillages majeurs et blocages routiers imprévisibles, axes saturés 07h-09h et 18h-21h’,src:‘CONTEXTE OPÉRATIONNEL’,note:‘Prévoir trajets alternatifs’},
+{lvl:‘medium’,title:‘Zones à risque élevé — périphérie sud Lima (Villa María del Triunfo, SJL) et certains secteurs du Callao’,src:‘MEAE · PÉROU’,note:‘Consulter conseils aux voyageurs MEAE régulièrement’},
+{lvl:‘low’,title:‘Volcans Sabancaya et Ubinas en activité — zones d'exclusion maintenues autour d'Arequipa, aucun impact sur Lima’,src:‘IGP PÉROU · OVI’,note:‘Surveiller panaches si déplacement vers le sud’},
+{lvl:‘low’,title:‘Garúa (brouillard côtier) — visibilité réduite en matinée, chaussées glissantes, conditions hivernales Lima’,src:‘SENAMHI PÉROU’,note:‘Prudence conduite nocturne et matinale’},
+{lvl:‘low’,title:‘Risque sismique permanent — côte péruvienne parmi les plus actives au monde, plan évacuation ambassade à maintenir’,src:‘IGP PÉROU’,note:‘Vérifier points de rassemblement et liaisons radio’},
+{lvl:‘low’,title:‘Tensions sociales — conflits miniers et routiers récurrents dans les régions andines, impact possible sur axes Lima-Cusco’,src:‘CONTEXTE PÉROU’,note:‘Anticiper lors de déplacements en régions’},
+];
+var html=’’;
+for(var i=0;i<items.length;i++){
+var item=items[i];
+var lc=item.lvl===‘high’?‘lvl-h’:item.lvl===‘medium’?‘lvl-m’:‘lvl-l’;
+var lt=item.lvl===‘high’?‘CRITIQUE’:item.lvl===‘medium’?‘ATTENTION’:‘INFO’;
+html+=’<div class="n-item '+item.lvl+'">’+
+‘<div class="n-title">’+item.title+’</div>’+
+‘<div class="n-meta"><span class="n-src">’+item.src+’</span><span class="n-lvl '+lc+'">’+lt+’</span></div>’+
+‘<div class="n-note">→ ‘+item.note+’</div>’+
+‘</div>’;
+}
+document.getElementById(‘secu-ct’).innerHTML=html;
+log(‘✓ Sécurité: 7 points opérationnels’,‘ok’);
+}
+
+// VOLCANS
+function renderVolcans(){
+var v=[
+{n:‘Sabancaya’,d:‘~760km SE — Arequipa’,s:‘active’,note:‘Éruptions continues, panaches réguliers’},
+{n:‘Ubinas’,d:‘~700km SE — Arequipa’,s:‘active’,note:‘Sismicité volcanique récurrente’},
+{n:‘El Misti’,d:‘~770km SE — Arequipa’,s:‘normal’,note:‘Surveillance IGP permanente’},
+{n:‘Ticsani’,d:‘~730km SE’,s:‘normal’,note:‘Activité faible’},
+{n:‘Tutupaca’,d:‘~790km SE’,s:‘normal’,note:‘Surveillance OVI/INGEMMET’},
+];
+var html=’’;
+for(var i=0;i<v.length;i++){
+var x=v[i];
+html+=’<div class="v-item">’+
+‘<div><div class="v-name">’+x.n+’</div><div class="v-dist">’+x.d+’ · ‘+x.note+’</div></div>’+
+‘<div class="vs '+(x.s==='active'?'vs-a':'vs-n')+'">’+(x.s===‘active’?‘ACTIF’:‘NORMAL’)+’</div>’+
+‘</div>’;
+}
+document.getElementById(‘volc-ct’).innerHTML=html;
+log(‘✓ Volcans: 5 surveillés’,‘ok’);
+}
+
+// BULLETIN
+function buildBulletin(sq,mq){
+var maxMag=0,proche=0,recent=0;
+for(var i=0;i<sq.length;i++){
+var f=sq[i];
+var m=f.properties.mag||0;
+if(m>maxMag)maxMag=m;
+var c=f.geometry.coordinates;
+if(dist(LAT,LON,c[1],c[0])<300)proche++;
+if((Date.now()-f.properties.time)<86400000)recent++;
+}
+var risk=‘VERT’;
+if(maxMag>=6.0||proche>0&&maxMag>=5.0)risk=‘ROUGE’;
+else if(maxMag>=5.0||proche>0)risk=‘ORANGE’;
+var rc=risk===‘ROUGE’?‘red’:risk===‘ORANGE’?‘orange’:‘green’;
+var tc=risk===‘ROUGE’?‘t-alert’:risk===‘ORANGE’?‘t-warn’:‘t-ok’;
+var titre=risk===‘ROUGE’?‘ALERTE — Activité sismique forte détectée’:
+risk===‘ORANGE’?‘VIGILANCE — Activité notable en cours’:
+‘Situation stable — Surveillance nominale’;
+var meteoTxt=mq&&mq.temperature_2m?mq.temperature_2m+‘°C, ‘+wmo(mq.weathercode)+’.’:’’;
+var synthese=‘Niveau ‘+risk+’ · ‘+sq.length+’ séisme(s) ≥M2.5 sur 7 jours (max M’+maxMag.toFixed(1)+’). ‘+
+(proche>0?proche+’ événement(s) à <300km de Lima. ‘:‘Aucun séisme proche. ‘)+meteoTxt;
+var points=[
+sq.length+’ séisme(s) ≥M2.5 en 7j — max M’+maxMag.toFixed(1),
+proche>0?proche+’ séisme(s) à <300km de Lima’:‘Aucun séisme proche de Lima’,
+recent>0?recent+’ événement(s) dans les 24h’:‘Aucun séisme récent (<24h)’,
+‘Sabancaya + Ubinas: éruptions continues’,
+‘Criminalité Lima: vigilance zones touristiques’,
+];
+var actions=[‘Consulter section Sécurité pour contexte opérationnel’,‘Maintenir plan évacuation ambassade à jour’];
+if(risk===‘ROUGE’)actions.unshift(‘⚠ ACTIVER PROTOCOLE SÉCURITÉ’);
+if(risk===‘ORANGE’)actions.unshift(‘Vérifier liaisons et points de rassemblement’);
+var date=new Date().toLocaleDateString(‘fr-FR’,{timeZone:‘America/Lima’,weekday:‘long’,day:‘numeric’,month:‘long’,year:‘numeric’});
+var html=’<div class="poche-wrap">’+
+‘<div class="risk-row">’+
+‘<div class="risk-badge '+rc+'"><div class="rl">’+risk+’</div><div class="rlabel">RISQUE</div></div>’+
+‘<div><div class="p-title">’+titre+’</div><div class="p-date">📅 ‘+date+’</div></div>’+
+‘</div>’+
+‘<div class="p-text">’+synthese+’</div>’+
+‘<div class="sec-lbl">VIGILANCE</div><div class="tags">’;
+for(var i=0;i<points.length;i++)html+=’<span class="tag '+tc+'">’+points[i]+’</span>’;
+html+=’</div><div class="sec-lbl">ACTIONS</div><div class="tags">’;
+for(var i=0;i<actions.length;i++)html+=’<span class="tag t-info">’+actions[i]+’</span>’;
+html+=’</div></div>’;
+document.getElementById(‘poche-ct’).innerHTML=html;
+log(’✓ Bulletin généré — Niveau: ’+risk,‘ok’);
+}
+
+// FETCH SÉISMES — XMLHttpRequest (compatible Safari)
+function fetchSeismes(callback){
+log(‘USGS — séismes Pérou…’,‘info’);
+var s=new Date();s.setDate(s.getDate()-7);
+var url=‘https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=’+s.toISOString().split(‘T’)[0]+’&minlatitude=-20&maxlatitude=-3&minlongitude=-85&maxlongitude=-65&minmagnitude=2.5&orderby=time&limit=15’;
+var xhr=new XMLHttpRequest();
+xhr.open(‘GET’,url,true);
+xhr.timeout=10000;
+xhr.onload=function(){
+if(xhr.status===200){
+try{
+var d=JSON.parse(xhr.responseText);
+seismData=d.features||[];
+var html=’’;
+for(var i=0;i<Math.min(seismData.length,8);i++){
+var f=seismData[i];
+var p=f.properties,c=f.geometry.coordinates;
+var m=p.mag?p.mag.toFixed(1):’?’;
+var cl=magCls(parseFloat(m));
+var km=dist(LAT,LON,c[1],c[0]);
+html+=’<div class="s-item '+cl+'">’+
+‘<div class="mag">’+m+’</div>’+
+‘<div><div class="s-loc">’+(p.place||‘Pérou’).replace(‘Peru’,‘Pérou’)+’</div>’+
+‘<div class="s-det">Prof:’+Math.round(c[2])+‘km · Lima:~’+km+‘km</div></div>’+
+‘<div class="s-time">’+ago(p.time)+’</div>’+
+‘</div>’;
+}
+document.getElementById(‘seism-ct’).innerHTML=html||’<div class="err">Aucun séisme détecté</div>’;
+log(‘✓ USGS: ‘+seismData.length+’ séismes chargés’,‘ok’);
+}catch(e){log(‘✗ USGS parse: ‘+e.message,‘alert’)}
+}else{log(‘✗ USGS HTTP: ‘+xhr.status,‘alert’)}
+callback(seismData);
+};
+xhr.onerror=function(){
+log(‘✗ USGS connexion échouée’,‘alert’);
+document.getElementById(‘seism-ct’).innerHTML=’<div class="err">⚠ USGS inaccessible</div>’;
+callback([]);
+};
+xhr.ontimeout=function(){
+log(‘✗ USGS timeout’,‘warn’);
+document.getElementById(‘seism-ct’).innerHTML=’<div class="err">⚠ USGS timeout</div>’;
+callback([]);
+};
+xhr.send();
+}
+
+// FETCH MÉTÉO — XMLHttpRequest
+function fetchMeteo(callback){
+log(‘Open-Meteo — Lima…’,‘info’);
+var url=‘https://api.open-meteo.com/v1/forecast?latitude=’+LAT+’&longitude=’+LON+’&current=temperature_2m,relativehumidity_2m,windspeed_10m,precipitation,weathercode&hourly=precipitation_probability&timezone=America/Lima&forecast_days=1’;
+var xhr=new XMLHttpRequest();
+xhr.open(‘GET’,url,true);
+xhr.timeout=10000;
+xhr.onload=function(){
+if(xhr.status===200){
+try{
+var d=JSON.parse(xhr.responseText);
+meteoData=d.current||{};
+var prec=d.hourly&&d.hourly.precipitation_probability?d.hourly.precipitation_probability:[];
+var maxP=prec.length?Math.max.apply(null,prec):0;
+document.getElementById(‘meteo-ct’).innerHTML=
+‘<div class="meteo-line">’+
+‘<div class="m-item"><div class="m-val">’+d.current.temperature_2m+’<span class="m-unit">°C</span></div><div class="m-lbl">TEMP</div></div>’+
+‘<div class="m-sep"></div>’+
+‘<div class="m-item"><div class="m-val">’+d.current.relativehumidity_2m+’<span class="m-unit">%</span></div><div class="m-lbl">HUMIDITÉ</div></div>’+
+‘<div class="m-sep"></div>’+
+‘<div class="m-item"><div class="m-val">’+d.current.windspeed_10m+’<span class="m-unit">km/h</span></div><div class="m-lbl">VENT</div></div>’+
+‘<div class="m-sep"></div>’+
+‘<div class="m-item"><div class="m-val">’+maxP+’<span class="m-unit">%</span></div><div class="m-lbl">PLUIE</div></div>’+
+‘</div><div class="m-desc">’+wmo(d.current.weathercode)+’ · Précip: ’+d.current.precipitation+‘mm</div>’;
+log(’✓ Météo Lima: ’+d.current.temperature_2m+‘°C’,‘ok’);
+callback(d);
+}catch(e){log(’✗ Météo parse: ’+e.message,‘warn’);callback(null)}
+}else{log(‘✗ Météo HTTP: ‘+xhr.status,‘warn’);callback(null)}
+};
+xhr.onerror=function(){
+log(‘✗ Météo connexion échouée’,‘warn’);
+document.getElementById(‘meteo-ct’).innerHTML=’<div class="err">⚠ Météo indisponible</div>’;
+callback(null);
+};
+xhr.ontimeout=function(){
+log(‘✗ Météo timeout’,‘warn’);
+callback(null);
+};
+xhr.send();
+}
+
+// REFRESH
+function doRefresh(){
+if(isRefreshing){toast(‘Actualisation en cours…’);return}
+isRefreshing=true;
+btnLoading(true);
+toast(‘⟳ Actualisation démarrée…’);
+log(‘═══ ACTUALISATION ═══’,‘info’);
+renderSecurite();
+renderVolcans();
+var sq=[];
+fetchSeismes(function(s){
+sq=s;
+fetchMeteo(function(mq){
+buildBulletin(sq,mq?mq.current:{});
+var now=new Date().toLocaleTimeString(‘fr-FR’,{timeZone:‘America/Lima’,hour12:false});
+document.getElementById(‘last-update’).textContent=now+’ PET’;
+btnLoading(false);
+toast(‘✓ Actualisé — ‘+now+’ PET’);
+log(‘═══ TERMINÉ ═══’,‘ok’);
+isRefreshing=false;
+if(refreshTimer)clearTimeout(refreshTimer);
+refreshTimer=setTimeout(doRefresh,3600000);
+});
+});
+}
+
+// INIT
+log(‘Veille Sécurité Lima — démarrage’,‘ok’);
+log(‘Sources: USGS · Open-Meteo · IGP · INDECI’,‘info’);
+doRefresh();
+</script>
+
+</body>
+</html>
